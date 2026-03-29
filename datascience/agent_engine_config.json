@@ -1,0 +1,10 @@
+{"display_name": "pon_agent_v1",
+"description": "POM Agent with BigQuery and RAG Corpus Integration",
+"enable_memory_bank": true,
+"memory_retention days": 30,
+"rag_corpus_id": "projects/np-sc-inventory-execution/locations/us-east1/ragCorpora/459930111945211904",
+"tools": [
+"bigquery",
+"rag_retrieval",
+"google_search"
+]}

@@ -1,0 +1,102 @@
+# ADK Configuration for Agent Engine Deployment with Memory Bank & Corpus
+app_name: "pom_agent_v4.0"
+model: "gemini-2.0-flash-exp"
+google_cloud:
+  project: "np-sc-inventory-execution"
+  location: "us-central1"
+  rag_location: "us-east1"
+  service_account: "ai-pom-po@np-sc-inventory-execution.iam.gserviceaccount.com"
+
+# Memory Bank Configuration
+memory:
+  enabled: true
+  type: "conversation"
+  max_history: 100
+  retention_days: 30
+  persistence: "google_cloud_storage"
+  auto_save: true
+
+# RAG Corpus Configuration
+corpus:
+  enabled: true
+  corpus_id: "2189312368855482368" # From RAG_CORPUS_ID.txt (POM_KB_RAG)
+  name: "POM_KB_RAG"
+  location: "us-east1"
+  documents:
+    - "bigquery_agent/instruction.md"
+    - "bigquery_agent/pom_cheat_code.md"
+    - "bigquery_agent/RAG_1.md"
+  retrieval:
+    top_k: 10
+    similarity_threshold: 0.3
+    indexing_enabled: true
+
+# Agent Configuration
+agent:
+  name: "POM Purchase Order Agent"
+  description: "AI agent for querying purchase orders with memory bank and RAG corpus support"
+  instructions: |
+    You are a helpful AI assistant specialized in purchase order (POM) management.
+    You have access to:
+    1. **Memory Bank** - Remembers conversation history for context-aware responses
+    2. **RAG Corpus** - Knowledge base for POM processes, BigQuery schemas, and best practices
+    3. **BigQuery** - Real-time purchase order data queries
+    4. **Confluence** - Documentation and policies
+    5. **Web Search** - External information
+    6. **Jira** - Issue tracking (read-only)
+    Always:
+    - Use conversation memory to provide context-aware responses
+    - Reference the RAG corpus for POM processes and query patterns
+    - Format results as markdown tables
+    - Be conversational and helpful
+    - Cite your sources
+
+# Tools Configuration
+tools:
+  - type: bigquery
+    enabled: true
+    config:
+      write_mode: "BLOCKED" # Read-only access
+      project: "np-sc-inventory-execution"
+      dataset: "pom_ai_analytics"
+
+  - type: rag_retrieval
+    enabled: true
+    config:
+      corpus_name: "POM_KB"
+      location: "us-east1"
+      top_k: 10
+
+  - type: confluence
+    enabled: true
+
+  - type: google_search
+    enabled: true
+
+  - type: jira
+    enabled: true
+    config:
+      read_only: true
+
+# Deployment Configuration
+deployment:
+  min_instances: 1
+  max_instances: 10
+  memory: "4Gi"
+  cpu: 4
+  timeout: 300
+  concurrency: 10
+  service_account: "ai-pom-po@np-sc-inventory-execution.iam.gserviceaccount.com"
+
+# Web Interface Configuration
+web:
+  enabled: true
+  port: 8000
+  host: "0.0.0.0"
+  features:
+    - streaming
+    - chat_history
+    - session_management
+    - tool_inspection
+    - memory_display
+    - corpus_reference
