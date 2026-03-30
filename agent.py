@@ -34,7 +34,7 @@ if env_path.exists():
 # Define constants for this example agent
 AGENT_NAME = "POM_Agent"
 APP_NAME = "agents"  # Changed to match ADK's expected app name
-USER_ID = "arghya_dey@homedepot.com"
+USER_ID = "arghya_dey@kaka.com"
 # GEMINI_MODEL = "gemini-2.0-flash-exp"
 GEMINI_MODEL = "gemini-1.5-pro"
 PROJECT_ID = "np-sc-inventory-execution"
